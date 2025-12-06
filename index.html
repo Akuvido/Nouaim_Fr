@@ -8,9 +8,7 @@
     <!-- Police moderne -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -22,7 +20,7 @@
             --text-main: #1e272e;
             --text-muted: #636e72;
             --border: #e1e5ee;
-            --shadow-soft: 0 12px 25px rgba(15, 35, 95, 0.08);
+            --shadow-soft: 0 10px 22px rgba(15, 35, 95, 0.08);
             --radius-lg: 18px;
             --radius-md: 10px;
         }
@@ -466,7 +464,7 @@
                 </label>
             </div>
             <p class="config-helper">
-                Les temps cochés seront respectés. Si la banque ne contient pas assez de phrases, certaines pourront se répéter.
+                Les temps cochés seront strictement respectés. Si la banque n’a pas assez de phrases, certaines se répéteront.
             </p>
         </div>
 
@@ -484,7 +482,7 @@
                 </label>
             </div>
             <p class="config-helper">
-                Chaque groupe dispose d’au moins 20 verbes en mémoire (évolutif dans une vraie version).
+                Dans cette version démo, chaque groupe dispose d’exemples codés en dur (extensibles plus tard).
             </p>
         </div>
 
@@ -501,7 +499,7 @@
                 </label>
             </div>
             <p class="config-helper">
-                Mode B : si tu ne coches que des temps simples, il est normal qu’aucun exercice ne soit trouvé.
+                Mode B : il faut cocher au moins un temps composé (passé composé, plus-que-parfait, passé antérieur).
             </p>
         </div>
 
@@ -516,6 +514,7 @@
         </div>
     </section>
 
+    <!-- EXERCICES -->
     <section class="card card-exercises">
         <div class="exercise-header">
             <h2><span>✏️</span> Exercices</h2>
@@ -528,6 +527,7 @@
         </div>
     </section>
 
+    <!-- RÉSULTATS -->
     <section class="card card-results">
         <h2><span>📊</span> Résultats et feedback</h2>
         <div class="results-header">
@@ -538,8 +538,8 @@
                 <div id="scoreDetails" class="score-details"></div>
             </div>
             <p class="hint">
-                Chaque exercice est « entièrement correct » seulement si tous les éléments sont justes
-                (forme + accord éventuel). L’objectif est la méthode, pas la sanction.
+                Un exercice est « entièrement correct » seulement si tous les éléments sont justes
+                (forme + accord éventuel). Le but est de t’aider à comprendre la méthode.
             </p>
         </div>
     </section>
@@ -551,234 +551,40 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
-    // --------- BANQUE D’EXERCICES (simplifiée mais fonctionnelle) ---------
-    var EXERCISES_MODE_A = [
-        { id:"A1", mode:"A", level:1, tenses:["present"], groups:[2],
+    // =========================
+    // 1. BANQUE D’EXERCICES
+    // =========================
+    // Chaque exercice : un seul temps (tense) et un seul groupe (group) pour simplifier.
+    var EXERCISES = [
+        // ---------- MODE A : CONJUGAISON ----------
+        { id:"A1", mode:"A", level:1, tense:"present", group:2,
           sentence:"Nous (finir) ___ nos devoirs chaque soir.",
           correctForm:"finissons",
-          explanation:"Présent de l’indicatif, verbe « finir », 1re personne du pluriel : nous finissons." },
-        { id:"A2", mode:"A", level:1, tenses:["present"], groups:[1],
+          explanation:"Présent de l’indicatif, 1re personne du pluriel : nous finissons." },
+        { id:"A2", mode:"A", level:1, tense:"present", group:1,
           sentence:"Tu (parler) ___ trop vite.",
           correctForm:"parles",
           explanation:"Présent, 2e personne du singulier : tu parles." },
-        { id:"A3", mode:"A", level:1, tenses:["present"], groups:[3],
+        { id:"A3", mode:"A", level:1, tense:"present", group:3,
           sentence:"Ils (aller) ___ souvent au cinéma.",
           correctForm:"vont",
           explanation:"Présent, verbe irrégulier « aller » : ils vont." },
-        { id:"A4", mode:"A", level:1, tenses:["imparfait"], groups:[1],
+
+        { id:"A4", mode:"A", level:1, tense:"imparfait", group:1,
           sentence:"Quand nous étions enfants, nous (jouer) ___ dans le jardin.",
           correctForm:"jouions",
           explanation:"Imparfait, 1re personne du pluriel : nous jouions." },
-        { id:"A5", mode:"A", level:1, tenses:["futur_simple"], groups:[3],
+
+        { id:"A5", mode:"A", level:1, tense:"futur_simple", group:3,
           sentence:"Demain, elle (partir) ___ à six heures.",
           correctForm:"partira",
           explanation:"Futur simple, 3e personne du singulier : elle partira." },
-        { id:"A6", mode:"A", level:1, tenses:["passe_simple"], groups:[1],
+
+        { id:"A6", mode:"A", level:1, tense:"passe_simple", group:1,
           sentence:"Hier, ils (parler) ___ toute la soirée.",
           correctForm:"parlèrent",
           explanation:"Passé simple, 3e personne du pluriel : ils parlèrent." },
 
-        { id:"A7", mode:"A", level:2, tenses:["passe_compose"], groups:[2],
+        { id:"A7", mode:"A", level:2, tense:"passe_compose", group:2,
           sentence:"Hier, nous (finir) ___ ce livre.",
           correctForm:"avons fini",
-          explanation:"Passé composé avec avoir : nous avons fini." },
-        { id:"A8", mode:"A", level:2, tenses:["passe_compose"], groups:[3],
-          sentence:"Elles (aller) ___ au marché ce matin.",
-          correctForm:"sont allées",
-          explanation:"Passé composé avec être : elles sont allées (accord avec le sujet)." },
-        { id:"A9", mode:"A", level:2, tenses:["plus_que_parfait"], groups:[1],
-          sentence:"Ils (terminer) ___ le projet avant notre arrivée.",
-          correctForm:"avaient terminé",
-          explanation:"Plus-que-parfait : ils avaient terminé." },
-        { id:"A10", mode:"A", level:2, tenses:["present"], groups:[3],
-          sentence:"Je (pouvoir) ___ t’aider si tu veux.",
-          correctForm:"peux",
-          explanation:"Présent, verbe « pouvoir », 1re personne : je peux." },
-
-        { id:"A11", mode:"A", level:3, tenses:["imparfait"], groups:[3],
-          sentence:"Nous (venir) ___ souvent ici quand nous étions petits.",
-          correctForm:"venions",
-          explanation:"Imparfait, 1re personne du pluriel : nous venions." },
-        { id:"A12", mode:"A", level:3, tenses:["futur_simple"], groups:[3],
-          sentence:"Ils (devoir) ___ rendre le travail demain.",
-          correctForm:"devront",
-          explanation:"Futur simple, verbe « devoir » : ils devront." },
-        { id:"A13", mode:"A", level:3, tenses:["plus_que_parfait"], groups:[3],
-          sentence:"Elle (voir) ___ le film avant toi.",
-          correctForm:"avait vu",
-          explanation:"Plus-que-parfait, verbe « voir » : elle avait vu." },
-        { id:"A14", mode:"A", level:3, tenses:["passe_anterieur"], groups:[1],
-          sentence:"À peine (arriver) ___, il repartit.",
-          correctForm:"fut arrivé",
-          explanation:"Passé antérieur, verbe « arriver » : il fut arrivé." }
-    ];
-
-    var EXERCISES_MODE_B = [
-        { id:"B1", mode:"B", level:1, tenses:["passe_compose"], groups:[3],
-          sentence:"Il a (manger) ___ des pommes.",
-          correctForm:"mangé",
-          requiresAgreement:false,
-          agreementType:"aucun",
-          explanation:"COD après → pas d’accord : mangé." },
-        { id:"B2", mode:"B", level:1, tenses:["passe_compose"], groups:[1],
-          sentence:"Elles sont (arriver) ___ en avance.",
-          correctForm:"arrivées",
-          requiresAgreement:true,
-          agreementType:"sujet",
-          explanation:"Auxiliaire être → accord avec le sujet « elles » : arrivées." },
-        { id:"B3", mode:"B", level:1, tenses:["passe_compose"], groups:[2],
-          sentence:"Nous avons (finir) ___ le travail.",
-          correctForm:"fini",
-          requiresAgreement:false,
-          agreementType:"aucun",
-          explanation:"COD après → pas d’accord : fini." },
-
-        { id:"B4", mode:"B", level:2, tenses:["passe_compose"], groups:[3],
-          sentence:"Les pommes qu’il a (manger) ___ étaient délicieuses.",
-          correctForm:"mangées",
-          requiresAgreement:true,
-          agreementType:"cod_avant",
-          explanation:"COD « les pommes » placé avant → mangées." },
-        { id:"B5", mode:"B", level:2, tenses:["passe_compose"], groups:[3],
-          sentence:"Les lettres qu’elle a (écrire) ___ sont sur la table.",
-          correctForm:"écrites",
-          requiresAgreement:true,
-          agreementType:"cod_avant",
-          explanation:"COD « les lettres » placé avant → écrites." },
-        { id:"B6", mode:"B", level:2, tenses:["passe_compose"], groups:[3],
-          sentence:"Elles se sont (lever) ___ tard.",
-          correctForm:"levées",
-          requiresAgreement:true,
-          agreementType:"pronom_reflechi",
-          explanation:"Verbe pronominal, COD = sujet → levées." },
-        { id:"B7", mode:"B", level:2, tenses:["passe_compose"], groups:[1],
-          sentence:"Les exercices qu’ils ont (préparer) ___ étaient difficiles.",
-          correctForm:"préparés",
-          requiresAgreement:true,
-          agreementType:"cod_avant",
-          explanation:"COD « les exercices » placé avant → préparés." },
-
-        { id:"B8", mode:"B", level:3, tenses:["passe_compose"], groups:[3],
-          sentence:"Ils se sont (parler) ___ longtemps.",
-          correctForm:"parlé",
-          requiresAgreement:false,
-          agreementType:"aucun",
-          explanation:"« se parler » → COI, pas de COD → parlé (invariable)." },
-        { id:"B9", mode:"B", level:3, tenses:["passe_compose"], groups:[3],
-          sentence:"Des difficultés, ils en ont (rencontrer) ___.",
-          correctForm:"rencontré",
-          requiresAgreement:false,
-          agreementType:"en",
-          explanation:"Avec « en », en général pas d’accord → rencontré." },
-        { id:"B10", mode:"B", level:3, tenses:["plus_que_parfait"], groups:[3],
-          sentence:"Les chansons qu’ils avaient (entendre) ___ la veille lui revenaient en tête.",
-          correctForm:"entendues",
-          requiresAgreement:true,
-          agreementType:"cod_avant",
-          explanation:"COD « les chansons » avant → entendues." },
-        { id:"B11", mode:"B", level:3, tenses:["passe_compose"], groups:[3],
-          sentence:"Elle s’est (laver) ___ les mains.",
-          correctForm:"lavé",
-          requiresAgreement:false,
-          agreementType:"aucun",
-          explanation:"COD « les mains » après → lavé (invariable)." },
-        { id:"B12", mode:"B", level:3, tenses:["passe_compose"], groups:[1],
-          sentence:"La décision qu’ils ont (prendre) ___ a surpris tout le monde.",
-          correctForm:"prise",
-          requiresAgreement:true,
-          agreementType:"cod_avant",
-          explanation:"COD « la décision » avant → prise." }
-    ];
-
-    var ALL_EXERCISES = EXERCISES_MODE_A.concat(EXERCISES_MODE_B);
-    var currentExercises = [];
-    var hasCorrection = false;
-
-    function getCheckedValues(name) {
-        var nodes = document.querySelectorAll('input[name="' + name + '"]:checked');
-        var values = [];
-        for (var i = 0; i < nodes.length; i++) {
-            values.push(nodes[i].value);
-        }
-        return values;
-    }
-
-    function getSelectedMode() {
-        var node = document.querySelector('input[name="mode"]:checked');
-        return node ? node.value : "A";
-    }
-
-    function arraysIntersect(a, b) {
-        for (var i = 0; i < a.length; i++) {
-            if (b.indexOf(a[i]) !== -1) return true;
-        }
-        return false;
-    }
-
-    function shuffleArray(array) {
-        var arr = array.slice();
-        for (var i = arr.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var tmp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = tmp;
-        }
-        return arr;
-    }
-
-    function updateInfo(text) {
-        var info = document.getElementById("exerciseInfo");
-        info.innerHTML = "ℹ️ " + text;
-    }
-
-    function clearResults() {
-        hasCorrection = false;
-        document.getElementById("scorePill").style.display = "none";
-        document.getElementById("scoreText").textContent = "";
-        document.getElementById("scoreDetails").textContent = "";
-        document.getElementById("btnExport").disabled = true;
-    }
-
-    function generateExercises() {
-        clearResults();
-
-        var level = parseInt(document.getElementById("levelSelect").value, 10);
-        var tenses = getCheckedValues("tense");
-        var groupsStr = getCheckedValues("group");
-        var groups = [];
-        for (var i = 0; i < groupsStr.length; i++) {
-            groups.push(parseInt(groupsStr[i], 10));
-        }
-        var mode = getSelectedMode();
-
-        if (!tenses.length) {
-            alert("Choisis au moins un temps.");
-            return;
-        }
-        if (!groups.length) {
-            alert("Choisis au moins un groupe verbal.");
-            return;
-        }
-
-        var composed = ["passe_compose", "plus_que_parfait", "passe_anterieur"];
-        if (mode === "B") {
-            var hasComposed = arraysIntersect(tenses, composed);
-            if (!hasComposed) {
-                updateInfo("Mode B : aucun temps composé sélectionné → pas d’exercices possibles. Coche au moins passé composé / plus-que-parfait / passé antérieur.");
-                document.getElementById("exerciseCounter").textContent = "0 exercice (combinaison impossible).";
-                document.getElementById("exerciseList").innerHTML = '<div class="exercise-empty">Aucun exercice pour cette combinaison. Ajoute un temps composé.</div>';
-                document.getElementById("btnCorrect").disabled = true;
-                return;
-            }
-        }
-
-        var candidates = [];
-        for (var k = 0; k < ALL_EXERCISES.length; k++) {
-            var ex = ALL_EXERCISES[k];
-            if (ex.mode !== mode) continue;
-            if (ex.level > level) continue;
-
-            if (!arraysIntersect(ex.tenses, tenses)) continue;
-            if (!arraysIntersect(ex.groups, groups)) continue;
-
-            candidates.push(ex);
