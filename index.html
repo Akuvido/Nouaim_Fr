@@ -2,1232 +2,181 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Conjugaison & accords – Atelier bienveillant</title>
+    <title>Atelier Conjugaison & Accord du Participe Passé</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Police moderne Google Fonts -->
+    <!-- Police moderne -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap"
         rel="stylesheet">
 
-    <style>
-        :root {
-            --bg: #f5f7fb;
-            --card-bg: #ffffff;
-            --primary: #4b7bec;
-            --primary-light: #dce6ff;
-            --accent: #20bf6b;
-            --danger: #eb3b5a;
-            --text-main: #1e272e;
-            --text-muted: #636e72;
-            --border: #e1e5ee;
-            --shadow-soft: 0 12px 25px rgba(15, 35, 95, 0.08);
-            --radius-lg: 16px;
-            --radius-md: 10px;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top left, #edf2ff, #f8fafc);
-            color: var(--text-main);
-        }
-
-        .page {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 24px 16px 40px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        header h1 {
-            font-size: clamp(1.8rem, 3vw, 2.3rem);
-            margin: 0 0 8px;
-        }
-
-        header p {
-            margin: 4px 0;
-            color: var(--text-muted);
-        }
-
-        .tagline {
-            font-size: 0.95rem;
-        }
-
-        .tagline span {
-            display: inline-block;
-            background: var(--primary-light);
-            color: var(--primary);
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 900px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-soft);
-            padding: 18px 18px 20px;
-        }
-
-        .card h2 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card h2 span {
-            font-size: 1.2rem;
-        }
-
-        .section-subtitle {
-            margin: 0 0 10px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .config-group {
-            margin-bottom: 14px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed var(--border);
-        }
-
-        .config-group:last-of-type {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .config-title {
-            font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 0.96rem;
-        }
-
-        .config-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 10px;
-        }
-
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: #f2f4ff;
-            font-size: 0.83rem;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: background 0.15s, border-color 0.15s, transform 0.05s;
-        }
-
-        .chip input {
-            accent-color: var(--primary);
-        }
-
-        .chip:hover {
-            background: #e7ecff;
-        }
-
-        .chip:active {
-            transform: scale(0.97);
-        }
-
-        .level-select {
-            width: 100%;
-            max-width: 220px;
-            padding: 6px 10px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .level-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(75, 123, 236, 0.18);
-        }
-
-        .mode-label {
-            font-weight: 600;
-        }
-
-        .config-helper {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        button {
-            border-radius: 999px;
-            border: none;
-            padding: 8px 18px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.05s, box-shadow 0.1s, background 0.1s;
-        }
-
-        button:active {
-            transform: translateY(1px);
-            box-shadow: none;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 6px 14px rgba(75, 123, 236, 0.4);
-        }
-
-        .btn-primary:hover {
-            background: #3867d6;
-        }
-
-        .btn-secondary {
-            background: #ecf1ff;
-            color: var(--primary);
-        }
-
-        .btn-secondary:hover {
-            background: #dde6ff;
-        }
-
-        .btn-ghost {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-        }
-
-        .btn-ghost:hover {
-            background: #f3f5f9;
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .pill-info {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            background: #f1f3fb;
-            border-radius: 999px;
-            padding: 4px 10px;
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
-
-        .pill-info strong {
-            color: var(--primary);
-        }
-
-        /* Zone exercices */
-
-        .card-exercises {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .exercise-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .exercise-meta h2 {
-            margin: 0;
-        }
-
-        .exercise-counter {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .exercise-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 480px;
-            overflow-y: auto;
-            padding-right: 2px;
-        }
-
-        .exercise-empty {
-            text-align: center;
-            padding: 24px 10px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .exercise-item {
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            padding: 10px 12px;
-            background: #fdfdff;
-        }
-
-        .exercise-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .exercise-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .exercise-mode-tag {
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            border-radius: 999px;
-            background: #edf3ff;
-            color: var(--primary);
-        }
-
-        .exercise-sentence {
-            font-size: 0.9rem;
-            margin: 4px 0 8px;
-        }
-
-        .input-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 8px;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .input-row label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .text-input {
-            flex: 1 1 150px;
-            min-width: 120px;
-            padding: 5px 9px;
-            border-radius: 999px;
-            border: 1px solid var(--border);
-            font-size: 0.86rem;
-            outline: none;
-        }
-
-        .text-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 1px rgba(75, 123, 236, 0.25);
-        }
-
-        .small-select {
-            padding: 4px 7px;
-            border-radius: 999px;
-            border: 1px solid var(--border);
-            font-size: 0.8rem;
-            outline: none;
-        }
-
-        .small-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 1px rgba(75, 123, 236, 0.25);
-        }
-
-        .radio-group {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-        }
-
-        .radio-group label {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-
-        .feedback {
-            font-size: 0.8rem;
-            margin-top: 4px;
-            padding-top: 4px;
-            border-top: 1px dashed #e5e7f2;
-        }
-
-        .feedback .ok {
-            color: var(--accent);
-        }
-
-        .feedback .ko {
-            color: var(--danger);
-        }
-
-        .feedback .tip {
-            color: var(--text-muted);
-        }
-
-        /* Résultats */
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .score-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            background: #eafaf1;
-            color: #145a32;
-            font-size: 0.85rem;
-        }
-
-        .score-pill span {
-            font-weight: 700;
-        }
-
-        .score-pill.bad {
-            background: #fdeeee;
-            color: #c0392b;
-        }
-
-        .score-text {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-        }
-
-        .hint {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .hint strong {
-            color: var(--primary);
-        }
-    </style>
+    <!-- Styles -->
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 <div class="page">
-    <header>
-        <h1>Atelier de conjugaison & accords du participe</h1>
-        <p>Un petit labo bienveillant pour apprivoiser l’indicatif et les accords des temps composés.</p>
-        <p class="tagline">
-            <span>Pas de stress, juste des progrès pas à pas ✨</span>
-        </p>
+    <header class="header">
+        <div>
+            <h1>Atelier de conjugaison & accord du participe passé</h1>
+            <p class="subtitle">Un exerciseur scolaire moderne, bienveillant et hébergeable sur GitHub Pages.</p>
+        </div>
+        <div class="header-badge">
+            <span>100 % front-end • GitHub Pages ready</span>
+        </div>
     </header>
 
-    <div class="layout">
-        <!-- CONFIGURATION -->
-        <section class="card">
-            <h2><span>⚙️</span>Configuration de l’exercice</h2>
-            <p class="section-subtitle">Choisis ton niveau, les temps, les groupes verbaux et le type d’exercice.</p>
+    <!-- ZONE PARAMÈTRES (haut) -->
+    <section class="card card-config">
+        <h2><span>⚙️</span> Paramètres de l’exercice</h2>
+        <p class="section-subtitle">Choisis ton niveau, les temps, les groupes verbaux et le mode d’entraînement.</p>
 
-            <div class="config-group">
-                <div class="config-title">Niveau</div>
-                <select id="levelSelect" class="level-select">
-                    <option value="1">Niveau 1 – bases & accords simples</option>
-                    <option value="2">Niveau 2 – COD avant, pronominaux simples</option>
-                    <option value="3">Niveau 3 – cas piégeux & situations mixtes</option>
-                </select>
-                <div class="config-helper">
-                    Plus le niveau est élevé, plus les phrases peuvent être piégeuses. Tu peux toujours redescendre si besoin.
-                </div>
-            </div>
+        <!-- Niveau -->
+        <div class="config-group">
+            <div class="config-title">Niveau de difficulté</div>
+            <select id="levelSelect" class="level-select">
+                <option value="1">Niveau 1 — temps simples & accords simples</option>
+                <option value="2">Niveau 2 — COD avant & pronominaux simples</option>
+                <option value="3">Niveau 3 — cas piégeux (en, COI, COD avant, pronominaux…)</option>
+            </select>
+            <p class="config-helper">
+                Plus le niveau est élevé, plus les phrases sont riches et piégeuses. Tu peux changer de niveau à tout moment.
+            </p>
+        </div>
 
-            <div class="config-group">
-                <div class="config-title">Temps (indicatif)</div>
-                <div class="config-options">
-                    <label class="chip">
-                        <input type="checkbox" name="tense" value="present" checked>
-                        Présent
-                    </label>
-                    <label class="chip">
-                        <input type="checkbox" name="tense" value="imparfait">
-                        Imparfait
-                    </label>
-                    <label class="chip">
-                        <input type="checkbox" name="tense" value="passe_simple">
-                        Passé simple
-                    </label>
-                    <label class="chip">
-                        <input type="checkbox" name="tense" value="futur_simple">
-                        Futur simple
-                    </label>
-                    <label class="chip">
-                        <input type="checkbox" name="tense" value="passe_compose">
-                        Passé composé
-                    </label>
-                    <label class="chip">
-                        <input type="checkbox" name="tense" value="plus_que_parfait">
-                        Plus-que-parfait
-                    </label>
-                    <label class="chip">
-                        <input type="checkbox" name="tense" value="passe_anterieur">
-                        Passé antérieur
-                    </label>
-                </div>
-                <div class="config-helper">
-                    Tu peux en cocher plusieurs (par exemple : présent + futur simple).
-                </div>
+        <!-- Temps -->
+        <div class="config-group">
+            <div class="config-title">Temps de l’indicatif</div>
+            <div class="config-subtitle">Temps simples</div>
+            <div class="config-options">
+                <label class="chip">
+                    <input type="checkbox" name="tense" value="present" checked>
+                    Présent
+                </label>
+                <label class="chip">
+                    <input type="checkbox" name="tense" value="imparfait">
+                    Imparfait
+                </label>
+                <label class="chip">
+                    <input type="checkbox" name="tense" value="passe_simple">
+                    Passé simple
+                </label>
+                <label class="chip">
+                    <input type="checkbox" name="tense" value="futur_simple">
+                    Futur simple
+                </label>
             </div>
+            <div class="config-subtitle">Temps composés</div>
+            <div class="config-options">
+                <label class="chip">
+                    <input type="checkbox" name="tense" value="passe_compose">
+                    Passé composé
+                </label>
+                <label class="chip">
+                    <input type="checkbox" name="tense" value="plus_que_parfait">
+                    Plus-que-parfait
+                </label>
+                <label class="chip">
+                    <input type="checkbox" name="tense" value="passe_anterieur">
+                    Passé antérieur
+                </label>
+            </div>
+            <p class="config-helper">
+                Tu peux mélanger plusieurs temps (par ex. présent + futur simple + passé composé).
+            </p>
+        </div>
 
-            <div class="config-group">
-                <div class="config-title">Groupes verbaux</div>
-                <div class="config-options">
-                    <label class="chip">
-                        <input type="checkbox" name="group" value="1" checked>
-                        1<sup>er</sup> groupe (-ER)
-                    </label>
-                    <label class="chip">
-                        <input type="checkbox" name="group" value="2" checked>
-                        2<sup>e</sup> groupe (-IR type finir)
-                    </label>
-                    <label class="chip">
-                        <input type="checkbox" name="group" value="3" checked>
-                        3<sup>e</sup> groupe / irréguliers
-                    </label>
-                </div>
+        <!-- Groupes -->
+        <div class="config-group">
+            <div class="config-title">Groupes verbaux</div>
+            <div class="config-options">
+                <label class="chip">
+                    <input type="checkbox" name="group" value="1" checked>
+                    1<sup>er</sup> groupe (verbes en -ER)
+                </label>
+                <label class="chip">
+                    <input type="checkbox" name="group" value="2" checked>
+                    2<sup>e</sup> groupe (verbes en -IR type <em>finir</em>)
+                </label>
+                <label class="chip">
+                    <input type="checkbox" name="group" value="3" checked>
+                    3<sup>e</sup> groupe / irréguliers
+                </label>
             </div>
+            <p class="config-helper">
+                Chaque groupe dispose d’au moins 20 verbes en mémoire pour varier les phrases.
+            </p>
+        </div>
 
-            <div class="config-group">
-                <div class="config-title">Mode d’exercice</div>
-                <div class="config-options">
-                    <label class="chip">
-                        <input type="radio" name="mode" value="A" checked>
-                        <span><strong>Mode A</strong> – Conjugaison</span>
-                    </label>
-                    <label class="chip">
-                        <input type="radio" name="mode" value="B">
-                        <span><strong>Mode B</strong> – Accord du participe passé</span>
-                    </label>
-                </div>
-                <div class="config-helper">
-                    <span class="mode-label">Mode A</span> : tu conjugues les verbes (temps simples + auxiliaires).<br>
-                    <span class="mode-label">Mode B</span> : tu travailles la méthode d’accord du participe passé étape par étape.
-                </div>
+        <!-- Modes -->
+        <div class="config-group">
+            <div class="config-title">Mode d’exercice</div>
+            <div class="config-options">
+                <label class="chip">
+                    <input type="radio" name="mode" value="A" checked>
+                    <span><strong>Mode A</strong> — Conjugaison (temps simples & auxiliaires)</span>
+                </label>
+                <label class="chip">
+                    <input type="radio" name="mode" value="B">
+                    <span><strong>Mode B</strong> — Accord du participe passé (temps composés)</span>
+                </label>
             </div>
+            <p class="config-helper">
+                <strong>Mode A :</strong> tu conjugues le verbe à l’indicatif avec l’infinitif entre parenthèses.<br>
+                <strong>Mode B :</strong> tu écris la forme conjuguée <em>et</em> tu appliques la méthode d’accord du participe passé.
+            </p>
+        </div>
 
-            <div class="actions">
-                <button class="btn-primary" id="btnGenerate">Générer 5 exercices</button>
-                <button class="btn-secondary" id="btnCorrect" disabled>Corriger</button>
-                <button class="btn-ghost" id="btnExport" disabled>Exporter en PDF</button>
-            </div>
+        <!-- Actions -->
+        <div class="actions">
+            <button id="btnGenerate" class="btn btn-primary">Générer 5 exercices</button>
+            <button id="btnCorrect" class="btn btn-secondary" disabled>Corriger</button>
+            <button id="btnExport" class="btn btn-ghost" disabled>Exporter en PDF</button>
+        </div>
 
-            <div class="pill-info" id="exerciseInfo">
-                ℹ️ <span>Commence par choisir tes paramètres puis clique sur <strong>Générer 5 exercices</strong>.</span>
-            </div>
-        </section>
+        <div class="pill-info" id="exerciseInfo">
+            ℹ️ Configure tes paramètres, puis clique sur <strong>Générer 5 exercices</strong>. L’application garantit toujours 5 exercices.
+        </div>
+    </section>
 
-        <!-- EXERCICES + RESULTATS -->
-        <section class="card card-exercises">
-            <div class="exercise-meta">
-                <h2><span>✏️</span>Exercices</h2>
-                <div class="exercise-counter" id="exerciseCounter">Aucun exercice pour l’instant</div>
+    <!-- ZONE EXERCICES (milieu) -->
+    <section class="card card-exercises">
+        <div class="exercise-header">
+            <h2><span>✏️</span> Exercices</h2>
+            <div id="exerciseCounter" class="exercise-counter">Aucun exercice généré pour l’instant</div>
+        </div>
+        <div id="exerciseList" class="exercise-list">
+            <div class="exercise-empty">
+                Les phrases apparaîtront ici. Tu pourras écrire les formes verbales, indiquer les accords, puis lancer la correction détaillée.
             </div>
-            <div id="exerciseList" class="exercise-list">
-                <div class="exercise-empty">
-                    Les phrases apparaîtront ici. Tu pourras écrire tes réponses, indiquer s’il y a accord, et voir ensuite une correction
-                    bienveillante avec des explications courtes.
-                </div>
-            </div>
+        </div>
+    </section>
 
-            <div class="results-header">
-                <div>
-                    <div id="scorePill" class="score-pill" style="display:none;">
-                        Score : <span id="scoreText"></span>
-                    </div>
-                    <div class="score-text" id="scoreDetails"></div>
+    <!-- ZONE SCORE + FEEDBACK + PDF (bas) -->
+    <section class="card card-results">
+        <h2><span>📊</span> Résultats et feedback</h2>
+        <div class="results-header">
+            <div>
+                <div id="scorePill" class="score-pill" style="display:none;">
+                    Score : <span id="scoreText"></span>
                 </div>
-                <div class="hint">
-                    Chaque exercice n’est « entièrement correct » que si tous les éléments sont bons (forme + accord éventuel).
-                </div>
+                <div id="scoreDetails" class="score-details"></div>
             </div>
-        </section>
-    </div>
+            <p class="hint">
+                Chaque exercice est « entièrement correct » seulement si tous les éléments sont justes
+                (forme + accord éventuel). L’objectif est de t’aider à <strong>comprendre la méthode</strong>, pas de te juger.
+            </p>
+        </div>
+    </section>
 </div>
 
-<!-- jsPDF pour export PDF (CDN, côté client uniquement) -->
+<!-- jsPDF (CDN) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
         integrity="sha512-YkA1dFf0kR6CAnCq7YqS2Zb5kMf6JFWdtIuWo5yM1NqGhWYOg2SeEG+1F7L9E3SWN2YfDPaZxiVxQ0pFqLB8Qw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<script>
-    // -----------------------
-    // Données d’exercices (démo)
-    // -----------------------
-    // NB : pour un vrai usage, tu pourras enrichir ce tableau ou charger un JSON local.
-    const EXERCISES = [
-        // MODE A – Conjugaison (niveau 1-2)
-        {
-            id: "A1",
-            mode: "A",
-            level: 1,
-            tenses: ["present"],
-            groups: [2],
-            sentence: "Nous (finir) ___ nos devoirs chaque soir.",
-            correctForm: "finissons",
-            explanation: "Présent de l’indicatif, verbe « finir », 1re personne du pluriel : nous finissons."
-        },
-        {
-            id: "A2",
-            mode: "A",
-            level: 1,
-            tenses: ["present"],
-            groups: [1],
-            sentence: "Tu (parler) ___ trop vite.",
-            correctForm: "parles",
-            explanation: "Présent de l’indicatif, verbe du 1er groupe : tu parles."
-        },
-        {
-            id: "A3",
-            mode: "A",
-            level: 1,
-            tenses: ["present"],
-            groups: [3],
-            sentence: "Ils (aller) ___ souvent au cinéma.",
-            correctForm: "vont",
-            explanation: "Présent de l’indicatif, verbe irrégulier « aller » : ils vont."
-        },
-        {
-            id: "A4",
-            mode: "A",
-            level: 1,
-            tenses: ["imparfait"],
-            groups: [1],
-            sentence: "Quand nous étions enfants, nous (jouer) ___ dans le jardin.",
-            correctForm: "jouions",
-            explanation: "Imparfait, 1re personne du pluriel : nous jouions (attention au -i-)."
-        },
-        {
-            id: "A5",
-            mode: "A",
-            level: 1,
-            tenses: ["futur_simple"],
-            groups: [3],
-            sentence: "Demain, elle (partir) ___ à six heures.",
-            correctForm: "partira",
-            explanation: "Futur simple, 3e personne du singulier : elle partira."
-        },
-        {
-            id: "A6",
-            mode: "A",
-            level: 2,
-            tenses: ["passe_compose"],
-            groups: [2],
-            sentence: "Hier, nous (finir) ___ ce livre.",
-            correctForm: "avons fini",
-            explanation: "Passé composé avec l’auxiliaire « avoir » : nous avons fini."
-        },
-        {
-            id: "A7",
-            mode: "A",
-            level: 2,
-            tenses: ["plus_que_parfait"],
-            groups: [1],
-            sentence: "Ils (terminer) ___ le projet avant notre arrivée.",
-            correctForm: "avaient terminé",
-            explanation: "Plus-que-parfait : ils avaient terminé."
-        },
-
-        // MODE B – Accord du participe passé
-        {
-            id: "B1",
-            mode: "B",
-            level: 2,
-            tenses: ["passe_compose"],
-            groups: [3],
-            sentence: "Les pommes qu’il (manger) ___ étaient délicieuses.",
-            correctForm: "mangées",
-            requiresAgreement: true,
-            agreementType: "cod_avant",
-            explanation: "COD « les pommes » est placé avant, avec l’auxiliaire avoir → accord au féminin pluriel : mangées."
-        },
-        {
-            id: "B2",
-            mode: "B",
-            level: 2,
-            tenses: ["passe_compose"],
-            groups: [3],
-            sentence: "Elles se sont (lever) ___ tard.",
-            correctForm: "levées",
-            requiresAgreement: true,
-            agreementType: "pronom_reflechi",
-            explanation: "Verbe pronominal, COD « se » = sujet « elles » → accord au féminin pluriel : levées."
-        },
-        {
-            id: "B3",
-            mode: "B",
-            level: 1,
-            tenses: ["passe_compose"],
-            groups: [3],
-            sentence: "Il a (manger) ___ des pommes.",
-            correctForm: "mangé",
-            requiresAgreement: false,
-            agreementType: "aucun",
-            explanation: "COD « des pommes » est placé après → pas d’accord : mangé (invariable)."
-        },
-        {
-            id: "B4",
-            mode: "B",
-            level: 2,
-            tenses: ["passe_compose"],
-            groups: [3],
-            sentence: "Les lettres qu’elle a (écrire) ___ sont sur la table.",
-            correctForm: "écrites",
-            requiresAgreement: true,
-            agreementType: "cod_avant",
-            explanation: "COD « les lettres » est placé avant l’auxiliaire → accord : écrites."
-        },
-        {
-            id: "B5",
-            mode: "B",
-            level: 3,
-            tenses: ["passe_compose"],
-            groups: [3],
-            sentence: "Ils se sont (parler) ___ longtemps.",
-            correctForm: "parlé",
-            requiresAgreement: false,
-            agreementType: "aucun",
-            explanation: "Ici « se parler » a un COI, pas de COD → participe passé invariable : parlé."
-        },
-        {
-            id: "B6",
-            mode: "B",
-            level: 2,
-            tenses: ["passe_compose"],
-            groups: [3],
-            sentence: "Les valises sont (arriver) ___ en retard.",
-            correctForm: "arrivées",
-            requiresAgreement: true,
-            agreementType: "sujet",
-            explanation: "Auxiliaire être : accord avec le sujet « les valises » → fémin. plur. : arrivées."
-        },
-        {
-            id: "B7",
-            mode: "B",
-            level: 3,
-            tenses: ["plus_que_parfait"],
-            groups: [3],
-            sentence: "Les chansons qu’ils avaient (entendre) ___ la veille lui revenaient en tête.",
-            correctForm: "entendues",
-            requiresAgreement: true,
-            agreementType: "cod_avant",
-            explanation: "COD « les chansons » placé avant « avaient » → accord : entendues."
-        }
-    ];
-
-    let currentExercises = []; // exercices affichés
-    let hasCorrection = false; // permet de savoir si la correction a été faite
-
-    // -----------------------
-    // Utilitaires
-    // -----------------------
-    function shuffleArray(array) {
-        const arr = array.slice();
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
-
-    function getCheckedValues(name) {
-        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
-            .map(i => i.value);
-    }
-
-    function getSelectedMode() {
-        const input = document.querySelector('input[name="mode"]:checked');
-        return input ? input.value : "A";
-    }
-
-    function updateExerciseInfo(text) {
-        const info = document.getElementById("exerciseInfo");
-        info.innerHTML = "ℹ️ " + text;
-    }
-
-    function clearResults() {
-        hasCorrection = false;
-        document.getElementById("scorePill").style.display = "none";
-        document.getElementById("scoreText").textContent = "";
-        document.getElementById("scoreDetails").textContent = "";
-        document.getElementById("btnExport").disabled = true;
-    }
-
-    // -----------------------
-    // Génération d’exercices
-    // -----------------------
-    function generateExercises() {
-        clearResults();
-
-        const level = parseInt(document.getElementById("levelSelect").value, 10);
-        const tenses = getCheckedValues("tense");
-        const groups = getCheckedValues("group");
-        const mode = getSelectedMode();
-
-        if (tenses.length === 0) {
-            alert("Choisis au moins un temps pour générer des exercices.");
-            return;
-        }
-        if (groups.length === 0) {
-            alert("Choisis au moins un groupe verbal.");
-            return;
-        }
-
-        const tSet = new Set(tenses);
-        const gSet = new Set(groups.map(g => parseInt(g, 10)));
-
-        let filtered = EXERCISES.filter(ex => {
-            if (ex.mode !== mode) return false;
-            // On autorise les exercices jusqu’au niveau choisi (1 => base, 2 => 1+2, etc.)
-            if (ex.level > level) return false;
-
-            const hasTense = ex.tenses.some(t => tSet.has(t));
-            if (!hasTense) return false;
-
-            const hasGroup = ex.groups.some(g => gSet.has(g));
-            return hasGroup;
-        });
-
-        if (filtered.length === 0) {
-            currentExercises = [];
-            renderExerciseList();
-            document.getElementById("exerciseCounter").textContent =
-                "Aucun exercice trouvé pour ces critères.";
-            updateExerciseInfo("Ajuste peut-être le niveau, les temps ou les groupes verbaux pour obtenir des phrases.");
-            document.getElementById("btnCorrect").disabled = true;
-            return;
-        }
-
-        filtered = shuffleArray(filtered);
-        const requested = 5;
-        const selected = filtered.slice(0, requested);
-
-        currentExercises = selected.map(ex => ({
-            ...ex,
-            user: {
-                form: "",
-                accordYesNo: null,
-                accordType: ""
-            },
-            result: {}
-        }));
-
-        renderExerciseList();
-
-        const countText = selected.length === requested
-            ? `5 exercices générés`
-            : `${selected.length} exercice(s) généré(s) (pas assez d’items pour en proposer 5).`;
-        document.getElementById("exerciseCounter").textContent = countText;
-
-        updateExerciseInfo("Remplis tes réponses puis clique sur « Corriger » pour voir les explications.");
-        document.getElementById("btnCorrect").disabled = false;
-    }
-
-    // -----------------------
-    // Affichage des exercices
-    // -----------------------
-    function renderExerciseList() {
-        const container = document.getElementById("exerciseList");
-        container.innerHTML = "";
-
-        if (currentExercises.length === 0) {
-            const empty = document.createElement("div");
-            empty.className = "exercise-empty";
-            empty.textContent = "Aucun exercice pour l’instant. Configure ton entraînement puis clique sur « Générer 5 exercices ».";
-            container.appendChild(empty);
-            return;
-        }
-
-        currentExercises.forEach((ex, idx) => {
-            const item = document.createElement("div");
-            item.className = "exercise-item";
-            item.dataset.index = String(idx);
-
-            const header = document.createElement("div");
-            header.className = "exercise-item-header";
-
-            const title = document.createElement("div");
-            title.className = "exercise-title";
-            title.textContent = `Exercice ${idx + 1}`;
-            header.appendChild(title);
-
-            const modeTag = document.createElement("div");
-            modeTag.className = "exercise-mode-tag";
-            modeTag.textContent = ex.mode === "A" ? "Conjugaison" : "Accord du participe passé";
-            header.appendChild(modeTag);
-
-            item.appendChild(header);
-
-            const sentence = document.createElement("div");
-            sentence.className = "exercise-sentence";
-            sentence.textContent = ex.sentence;
-            item.appendChild(sentence);
-
-            const inputRow = document.createElement("div");
-            inputRow.className = "input-row";
-
-            const labelForm = document.createElement("label");
-            labelForm.textContent = "Forme du verbe :";
-            inputRow.appendChild(labelForm);
-
-            const input = document.createElement("input");
-            input.type = "text";
-            input.className = "text-input";
-            input.placeholder = "Écris ici la forme correcte";
-            input.dataset.role = "verbForm";
-            inputRow.appendChild(input);
-
-            item.appendChild(inputRow);
-
-            if (ex.mode === "B") {
-                const accordRow = document.createElement("div");
-                accordRow.className = "input-row";
-
-                const labelAccord = document.createElement("label");
-                labelAccord.textContent = "Faut-il accorder le participe passé ?";
-                accordRow.appendChild(labelAccord);
-
-                const radioGroup = document.createElement("div");
-                radioGroup.className = "radio-group";
-
-                const yesId = `accord-oui-${idx}`;
-                const noId = `accord-non-${idx}`;
-
-                const lblYes = document.createElement("label");
-                const rYes = document.createElement("input");
-                rYes.type = "radio";
-                rYes.name = `accord-${idx}`;
-                rYes.value = "oui";
-                rYes.id = yesId;
-                lblYes.appendChild(rYes);
-                lblYes.append(" Oui");
-                radioGroup.appendChild(lblYes);
-
-                const lblNo = document.createElement("label");
-                const rNo = document.createElement("input");
-                rNo.type = "radio";
-                rNo.name = `accord-${idx}`;
-                rNo.value = "non";
-                rNo.id = noId;
-                lblNo.appendChild(rNo);
-                lblNo.append(" Non");
-                radioGroup.appendChild(lblNo);
-
-                accordRow.appendChild(radioGroup);
-
-                const typeSelect = document.createElement("select");
-                typeSelect.className = "small-select";
-                typeSelect.dataset.role = "accordType";
-                const opt0 = new Option("Avec quoi ? (si accord)", "", true, true);
-                const opt1 = new Option("Sujet (être)", "sujet");
-                const opt2 = new Option("COD placé avant", "cod_avant");
-                const opt3 = new Option("Pronom réfléchi (COD = sujet)", "pronom_reflechi");
-                const opt4 = new Option("Pas d’accord (COD après, COI, en…)", "aucun");
-                typeSelect.add(opt0);
-                typeSelect.add(opt1);
-                typeSelect.add(opt2);
-                typeSelect.add(opt3);
-                typeSelect.add(opt4);
-
-                accordRow.appendChild(typeSelect);
-                item.appendChild(accordRow);
-            }
-
-            const feedback = document.createElement("div");
-            feedback.className = "feedback";
-            feedback.dataset.role = "feedback";
-            item.appendChild(feedback);
-
-            container.appendChild(item);
-        });
-    }
-
-    // -----------------------
-    // Correction
-    // -----------------------
-    function correctExercises() {
-        if (currentExercises.length === 0) return;
-
-        let fullCorrect = 0;
-        let partial = 0;
-
-        const listItems = Array.from(document.querySelectorAll(".exercise-item"));
-
-        currentExercises.forEach((ex, idx) => {
-            const item = listItems[idx];
-            const feedback = item.querySelector('[data-role="feedback"]');
-            feedback.innerHTML = "";
-
-            const input = item.querySelector('input[data-role="verbForm"]');
-            const userForm = (input.value || "").trim();
-
-            let accordYesNo = null;
-            let accordType = "";
-
-            if (ex.mode === "B") {
-                const checked = item.querySelector(`input[name="accord-${idx}"]:checked`);
-                accordYesNo = checked ? checked.value : null;
-
-                const sel = item.querySelector('select[data-role="accordType"]');
-                if (sel) {
-                    accordType = sel.value;
-                }
-            }
-
-            ex.user.form = userForm;
-            ex.user.accordYesNo = accordYesNo;
-            ex.user.accordType = accordType;
-
-            const isFormCorrect = userForm.toLowerCase() === ex.correctForm.toLowerCase();
-
-            let isAccordYesNoCorrect = true;
-            let isAccordTypeCorrect = true;
-
-            if (ex.mode === "B") {
-                const shouldAccord = !!ex.requiresAgreement;
-                const expectedYesNo = shouldAccord ? "oui" : "non";
-                isAccordYesNoCorrect = (accordYesNo === expectedYesNo);
-
-                if (shouldAccord) {
-                    isAccordTypeCorrect = accordType === ex.agreementType;
-                } else {
-                    // Quand il ne faut pas accorder, l’option « aucun » est acceptée,
-                    // mais on reste bienveillant si l’apprenant choisit autre chose.
-                    if (accordType && accordType !== "aucun") {
-                        isAccordTypeCorrect = false;
-                    } else {
-                        isAccordTypeCorrect = true;
-                    }
-                }
-            }
-
-            let fullyCorrect;
-            if (ex.mode === "A") {
-                fullyCorrect = isFormCorrect;
-            } else {
-                fullyCorrect = isFormCorrect && isAccordYesNoCorrect && isAccordTypeCorrect;
-            }
-
-            ex.result = {
-                isFormCorrect,
-                isAccordYesNoCorrect,
-                isAccordTypeCorrect,
-                fullyCorrect
-            };
-
-            if (fullyCorrect) {
-                fullCorrect++;
-                const p1 = document.createElement("div");
-                p1.className = "ok";
-                p1.textContent = "✅ Bien joué : tout est correct pour cet exercice.";
-                feedback.appendChild(p1);
-            } else {
-                const p1 = document.createElement("div");
-                p1.className = "ko";
-                p1.textContent = "❌ Ce n’est pas encore parfaitement juste, mais tu es en train d’apprendre. On regarde ensemble :";
-                feedback.appendChild(p1);
-            }
-
-            const p2 = document.createElement("div");
-            p2.className = "tip";
-
-            if (!isFormCorrect) {
-                p2.innerHTML += `• Forme attendue : <strong>${ex.correctForm}</strong>.<br>`;
-            } else {
-                p2.innerHTML += "• Forme du verbe ✅<br>";
-            }
-
-            if (ex.mode === "B") {
-                const shouldAccord = !!ex.requiresAgreement;
-                const expectedYesNo = shouldAccord ? "oui" : "non";
-
-                if (!isAccordYesNoCorrect) {
-                    p2.innerHTML += `• Accord : la bonne réponse était <strong>${expectedYesNo}</strong>.<br>`;
-                } else {
-                    p2.innerHTML += "• Décision d’accorder ou non ✅<br>";
-                }
-
-                if (shouldAccord) {
-                    if (!isAccordTypeCorrect) {
-                        const mapType = {
-                            "sujet": "le sujet (auxiliaire être)",
-                            "cod_avant": "le COD placé avant",
-                            "pronom_reflechi": "le pronom réfléchi quand il représente le COD = sujet",
-                            "aucun": "pas d’accord"
-                        };
-                        p2.innerHTML += `• Type d’accord : ici, on accorde avec <strong>${mapType[ex.agreementType] || "l’élément adéquat"}</strong>.<br>`;
-                    } else {
-                        p2.innerHTML += "• Type d’accord ✅<br>";
-                    }
-                }
-            }
-
-            p2.innerHTML += `• Rappel de la règle : ${ex.explanation}`;
-            feedback.appendChild(p2);
-
-            if (!fullyCorrect && (isFormCorrect || isAccordYesNoCorrect || isAccordTypeCorrect)) {
-                partial++;
-            }
-        });
-
-        const total = currentExercises.length;
-        const scorePill = document.getElementById("scorePill");
-        const scoreText = document.getElementById("scoreText");
-        const scoreDetails = document.getElementById("scoreDetails");
-
-        scorePill.style.display = "inline-flex";
-        scoreText.textContent = `${fullCorrect} / ${total} exercices entièrement corrects`;
-
-        const ratio = fullCorrect / total;
-        scorePill.classList.toggle("bad", ratio < 0.5);
-
-        if (fullCorrect === total) {
-            scoreDetails.textContent = "Bravo ! Tu maîtrises très bien ces phrases. Tu peux changer de niveau ou de mode pour continuer à progresser.";
-        } else if (fullCorrect === 0 && partial === 0) {
-            scoreDetails.textContent = "C’est un point de départ, pas un jugement. Relis paisiblement les explications puis réessaye avec les mêmes phrases ou de nouveaux exercices.";
-        } else {
-            scoreDetails.textContent =
-                "Tu as déjà des bons réflexes. Utilise les explications comme des pistes d’amélioration, pas comme une sanction.";
-        }
-
-        hasCorrection = true;
-        document.getElementById("btnExport").disabled = false;
-        updateExerciseInfo("Tu peux maintenant relire les explications ou exporter cette série en PDF.");
-    }
-
-    // -----------------------
-    // Export PDF (jsPDF)
-    // -----------------------
-    function exportToPDF() {
-        if (!hasCorrection || currentExercises.length === 0) return;
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        let y = 12;
-        doc.setFontSize(14);
-        doc.text("Atelier de conjugaison & accords – Série d’exercices", 10, y);
-        y += 8;
-
-        const now = new Date();
-        doc.setFontSize(10);
-        doc.text("Export généré le : " + now.toLocaleString("fr-FR"), 10, y);
-        y += 8;
-
-        currentExercises.forEach((ex, idx) => {
-            if (y > 260) {
-                doc.addPage();
-                y = 12;
-            }
-
-            doc.setFontSize(12);
-            doc.text(`Exercice ${idx + 1} – ${ex.mode === "A" ? "Conjugaison" : "Accord du participe passé"}`, 10, y);
-            y += 6;
-
-            doc.setFontSize(10);
-            const sentence = ex.sentence.replace("___", ex.user.form || "_____");
-            const phraseLines = doc.splitTextToSize("Phrase : " + sentence, 180);
-            doc.text(phraseLines, 10, y);
-            y += phraseLines.length * 5;
-
-            doc.text("Réponse attendue : " + ex.correctForm, 10, y);
-            y += 5;
-
-            if (ex.mode === "B") {
-                const shouldAccord = !!ex.requiresAgreement;
-                const expectedYesNo = shouldAccord ? "oui" : "non";
-
-                let line = "Accord ? (attendu) : " + expectedYesNo;
-                if (ex.user.accordYesNo) {
-                    line += " | Réponse donnée : " + ex.user.accordYesNo;
-                }
-                doc.text(line, 10, y);
-                y += 5;
-
-                const mapType = {
-                    "sujet": "avec le sujet (être)",
-                    "cod_avant": "avec le COD placé avant",
-                    "pronom_reflechi": "avec le pronom réfléchi (COD = sujet)",
-                    "aucun": "pas d’accord (COD après, COI, en…)"
-                };
-
-                if (shouldAccord) {
-                    let typeLine = "Type d’accord attendu : " + (mapType[ex.agreementType] || ex.agreementType);
-                    if (ex.user.accordType) {
-                        typeLine += " | Choix de l’élève : " + (mapType[ex.user.accordType] || ex.user.accordType);
-                    }
-                    const typeLines = doc.splitTextToSize(typeLine, 180);
-                    doc.text(typeLines, 10, y);
-                    y += typeLines.length * 5;
-                }
-            }
-
-            const ruleLines = doc.splitTextToSize("Règle / explication : " + ex.explanation, 180);
-            doc.text(ruleLines, 10, y);
-            y += ruleLines.length * 5 + 3;
-
-            doc.text(
-                "Exercice " + (ex.result.fullyCorrect ? "entièrement correct ✔︎" : "à retravailler ✎"),
-                10, y
-            );
-            y += 7;
-        });
-
-        doc.save("conjugaison-accords-exercices.pdf");
-    }
-
-    // -----------------------
-    // Événements
-    // -----------------------
-    document.getElementById("btnGenerate").addEventListener("click", generateExercises);
-    document.getElementById("btnCorrect").addEventListener("click", correctExercises);
-    document.getElementById("btnExport").addEventListener("click", exportToPDF);
-</script>
+<!-- Logique applicative -->
+<script src="./script.js"></script>
 </body>
 </html>
