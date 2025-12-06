@@ -1,11 +1,307 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Test GitHub Pages</title>
+  <title>Atelier accords du participe passé</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 900px;
+      margin: 20px auto;
+      line-height: 1.5;
+    }
+    fieldset {
+      border: 11px solid #ccc;
+      padding: 10px 15px;
+    }
+    .exercise {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .exercise p {
+      margin: 0 0 8px 0;
+    }
+    .feedback {
+      margin-top: 6px;
+      font-size: 0.9em;
+    }
+    .feedback.correct {
+      color: green;
+    }
+    .feedback.incorrect {
+      color: darkred;
+    }
+  </style>
 </head>
 <body>
-  <h1>Bonjour Ali ! 🎉</h1>
-  <p>Ton site GitHub Pages fonctionne !</p>
+  <h1>Atelier – Accord du participe passé</h1>
+
+  <!-- Choix du niveau -->
+  <label for="level">Niveau :</label>
+  <select id="level">
+    <option value="1">Niveau 1 – Cas simples (être / avoir)</option>
+    <option value="2">Niveau 2 – COD avant, verbes pronominaux</option>
+    <option value="3">Niveau 3 – Cas piégeux (en, COD/COI, etc.)</option>
+  </select>
+
+  <!-- Choix des temps -->
+  <fieldset style="margin-top:15px;">
+    <legend>Temps à exercer :</legend>
+    <label>
+      <input type="checkbox" class="tense-checkbox" value="passe_compose" checked>
+      Passé composé
+    </label>
+  </fieldset>
+
+  <!-- Choix des groupes -->
+  <fieldset style="margin-top:15px;">
+    <legend>Groupes verbaux :</legend>
+    <label>
+      <input type="checkbox" class="group-checkbox" value="1" checked>
+      1er groupe (-ER)
+    </label><br>
+    <label>
+      <input type="checkbox" class="group-checkbox" value="2" checked>
+      2e groupe (-IR type finir)
+    </label><br>
+    <label>
+      <input type="checkbox" class="group-checkbox" value="3" checked>
+      3e groupe / irréguliers
+    </label>
+  </fieldset>
+
+  <button id="generateBtn" style="margin-top:15px;">Générer 5 exercices</button>
+  <button id="correctBtn" style="margin-top:15px;">Corriger les 5</button>
+
+  <div id="exercises" style="margin-top:20px;"></div>
+
+  <div id="globalScore" style="margin-top:15px; font-weight:bold;"></div>
+
+  <script>
+    // ------------------------------
+    // Données : phrases d’accord
+    // ------------------------------
+    const questions = [
+      // --- Niveau 1 ---
+      {
+        level: 1,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Elles sont ___ en avance ce matin.",
+        answer: "arrivées",
+        needAgreement: true,
+        agreementKey: "subject",
+        explanation: "Auxiliaire 'être' → accord avec le sujet 'elles' (fém. plur.) → arrivées."
+      },
+      {
+        level: 1,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Ils sont ___ de l’échelle.",
+        answer: "tombés",
+        needAgreement: true,
+        agreementKey: "subject",
+        explanation: "Avec 'être', accord avec le sujet 'ils' → tombés."
+      },
+      {
+        level: 1,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Il a ___ des pommes.",
+        answer: "mangé",
+        needAgreement: false,
+        agreementKey: "none",
+        explanation: "Avec 'avoir', COD après → pas d’accord."
+      },
+
+      // --- Niveau 2 ---
+      {
+        level: 2,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Les pommes qu’il a ___ étaient délicieuses.",
+        answer: "mangées",
+        needAgreement: true,
+        agreementKey: "cod_avant",
+        explanation: "COD 'les pommes' avant le verbe → accord : mangées."
+      },
+      {
+        level: 2,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Les dossiers qu’elle a ___ sur la table sont importants.",
+        answer: "posés",
+        needAgreement: true,
+        agreementKey: "cod_avant",
+        explanation: "COD 'les dossiers' placé avant → posés."
+      },
+      {
+        level: 2,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Elle s’est ___ très tôt ce matin.",
+        answer: "levée",
+        needAgreement: true,
+        agreementKey: "reflexive_subject",
+        explanation: "Pronom réfléchi = COD → renvoie à 'elle' → levée."
+      },
+      {
+        level: 2,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Elle s’est ___ les mains.",
+        answer: "lavé",
+        needAgreement: false,
+        agreementKey: "reflexive_cod_apres",
+        explanation: "COD après → pas d’accord : lavé."
+      },
+
+      // --- Niveau 3 ---
+      {
+        level: 3,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Des pommes, j’en ai beaucoup ___.",
+        answer: "mangé",
+        needAgreement: false,
+        agreementKey: "en",
+        explanation: "Avec 'en', jamais d’accord."
+      },
+      {
+        level: 3,
+        tense: "passe_compose",
+        group: "1",
+        sentence: "Ils ont ___ à la directrice leurs excuses.",
+        answer: "présenté",
+        needAgreement: false,
+        agreementKey: "none",
+        explanation: "COI → pas d’accord."
+      }
+    ];
+
+    const agreementOptions = [
+      { value: "", label: "-- Choisir --" },
+      { value: "subject", label: "Le sujet (auxiliaire être)" },
+      { value: "cod_avant", label: "Le COD placé avant le verbe" },
+      { value: "reflexive_subject", label: "Pronom réfléchi (COD = sujet)" },
+      { value: "reflexive_cod_apres", label: "Verbe pronominal avec COD après" },
+      { value: "en", label: "Présence de 'en' (pas d’accord)" },
+      { value: "none", label: "Pas d’accord (COD après, COI…)" }
+    ];
+
+    let currentExercises = [];
+
+    function getSelectedTenses() {
+      const list = [];
+      document.querySelectorAll('.tense-checkbox:checked').forEach(cb => list.push(cb.value));
+      return list;
+    }
+
+    function getSelectedGroups() {
+      const list = [];
+      document.querySelectorAll('.group-checkbox:checked').forEach(cb => list.push(cb.value));
+      return list;
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function generateExercises() {
+      const level = parseInt(document.getElementById("level").value, 10);
+      const tenses = getSelectedTenses();
+      const groups = getSelectedGroups();
+      const exDiv = document.getElementById("exercises");
+      const scoreDiv = document.getElementById("globalScore");
+      scoreDiv.textContent = "";
+
+      const filtered = questions.filter(q =>
+        q.level <= level &&
+        tenses.includes(q.tense) &&
+        groups.includes(q.group)
+      );
+
+      if (filtered.length === 0) {
+        exDiv.textContent = "Aucun exercice disponible.";
+        return;
+      }
+
+      currentExercises = shuffle(filtered.slice()).slice(0, 5);
+      exDiv.innerHTML = "";
+
+      currentExercises.forEach((q, i) => {
+        const block = document.createElement("div");
+        block.className = "exercise";
+
+        let html = `<p><strong>${i + 1})</strong> ${q.sentence}</p>`;
+        html += `Forme : <input id="a-${i}" placeholder="participe passé"><br><br>`;
+        html += `Accord ? 
+                 <label><input type="radio" name="r-${i}" value="oui"> Oui</label>
+                 <label><input type="radio" name="r-${i}" value="non"> Non</label><br><br>`;
+        html += `Avec quoi ?
+                 <select id="w-${i}">
+                   ${agreementOptions.map(o => `<option value="${o.value}">${o.label}</option>`).join("")}
+                 </select>`;
+        html += `<div id="f-${i}" class="feedback"></div>`;
+        block.innerHTML = html;
+
+        exDiv.appendChild(block);
+      });
+    }
+
+    function correctExercises() {
+      let score = 0;
+
+      currentExercises.forEach((q, i) => {
+        const feedback = document.getElementById(`f-${i}`);
+        let msgs = [];
+
+        // réponse conjugaison
+        const form = document.getElementById(`a-${i}`).value.trim().toLowerCase();
+        const okForm = form === q.answer.toLowerCase();
+
+        msgs.push(okForm ? "✅ Forme correcte." : `❌ Mauvais participe : ${q.answer}`);
+
+        // accord ou pas
+        const radios = document.querySelector(`input[name="r-${i}"]:checked`);
+        const userAcc = radios ? radios.value : null;
+        const expAcc = q.needAgreement ? "oui" : "non";
+        const okAcc = userAcc === expAcc;
+
+        msgs.push(okAcc ? "✅ Accord (oui/non) correct." : `❌ L’accord attendu était : ${expAcc}`);
+
+        // accord avec quoi
+        const w = document.getElementById(`w-${i}`).value;
+        const okWith = (!q.needAgreement) || (w === q.agreementKey);
+
+        if (q.needAgreement) {
+          msgs.push(okWith ? "✅ Type d’accord correct." :
+            `❌ L’accord devait être : ${q.agreementKey}`);
+        }
+
+        msgs.push(`<em>${q.explanation}</em>`);
+
+        const allGood = okForm && okAcc && okWith;
+
+        feedback.className = "feedback " + (allGood ? "correct" : "incorrect");
+        feedback.innerHTML = msgs.join("<br>");
+
+        if (allGood) score++;
+      });
+
+      document.getElementById("globalScore").textContent =
+        `Score total : ${score} / ${currentExercises.length}`;
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", generateExercises);
+    document.getElementById("correctBtn").addEventListener("click", correctExercises);
+
+    generateExercises();
+  </script>
 </body>
 </html>
