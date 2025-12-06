@@ -962,7 +962,7 @@
     }
 
     function getCheckedValues(name) {
-        return Array.from(document.querySelectorAll(\`input[name="\${name}"]:checked\`))
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
             .map(i => i.value);
     }
 
@@ -985,7 +985,7 @@
         if (btnExport) btnExport.disabled = true;
     }
 
-    // Génération avec garantie de 5 exercices
+    // Génération avec garantie de 5 exercices, en respectant les temps choisis
     function generateExercises() {
         clearResults();
 
@@ -1003,27 +1003,44 @@
             return;
         }
 
-        const base = ALL_EXERCISES.filter(ex => ex.mode === mode && ex.level <= level);
+        // En mode B, on impose au moins un temps composé
+        if (mode === "B") {
+            const composedTenses = ["passe_compose", "plus_que_parfait", "passe_anterieur"];
+            const hasComposed = tenses.some(t => composedTenses.includes(t));
+            if (!hasComposed) {
+                alert("En mode Accord du participe passé, sélectionne au moins un temps composé (passé composé, plus-que-parfait, passé antérieur).");
+                return;
+            }
+        }
 
+        // Base : exercices du mode demandé, jusqu'au niveau choisi
+        let base = ALL_EXERCISES.filter(ex => ex.mode === mode && ex.level <= level);
+
+        // On garde uniquement ceux qui respectent temps + groupes
         let candidates = base.filter(ex =>
             ex.tenses.some(t => tenses.includes(t)) &&
             ex.groups.some(g => groups.includes(g))
         );
 
-        if (candidates.length < 5) {
-            candidates = base.filter(ex =>
-                ex.tenses.some(t => tenses.includes(t))
+        // Si rien, on relâche seulement le niveau (tout en respectant temps + groupes + mode)
+        if (candidates.length === 0) {
+            candidates = ALL_EXERCISES.filter(ex =>
+                ex.mode === mode &&
+                ex.tenses.some(t => tenses.includes(t)) &&
+                ex.groups.some(g => groups.includes(g))
             );
         }
-        if (candidates.length < 5) {
-            candidates = base;
-        }
+
+        // Si toujours rien → on ne force pas d'autres temps, on prévient
         if (candidates.length === 0) {
-            candidates = ALL_EXERCISES.filter(ex => ex.mode === mode);
+            alert("Pas encore d'exercices disponibles pour cette combinaison (temps + groupes). Essaie d'ajouter un temps ou un groupe.");
+            return;
         }
 
+        // Mélange
         candidates = shuffleArray(candidates);
 
+        // On garantit 5 exercices en répétant si nécessaire
         const selected = [];
         const needed = 5;
         for (let i = 0; i < needed; i++) {
@@ -1042,10 +1059,13 @@
 
         renderExerciseList();
 
-        document.getElementById("exerciseCounter").textContent =
-            "5 exercices générés (l’algorithme garantit toujours 5 items).";
+        const info =
+            candidates.length >= 5
+                ? "5 exercices différents générés pour les paramètres choisis."
+                : "5 exercices générés à partir d'un nombre limité d'exercices disponibles (certaines phrases peuvent se répéter).";
 
-        updateExerciseInfo("Remplis tes réponses, indique les accords si nécessaire, puis clique sur « Corriger ».");
+        document.getElementById("exerciseCounter").textContent = info;
+        updateExerciseInfo("Remplis tes réponses, puis clique sur « Corriger » pour voir les explications.");
         document.getElementById("btnCorrect").disabled = false;
     }
 
@@ -1071,7 +1091,7 @@
 
             const title = document.createElement("div");
             title.className = "exercise-title";
-            title.textContent = \`Exercice \${idx + 1}\`;
+            title.textContent = `Exercice ${idx + 1}`;
             header.appendChild(title);
 
             const modeTag = document.createElement("div");
@@ -1113,13 +1133,13 @@
                 const radioGroup = document.createElement("div");
                 radioGroup.className = "radio-group";
 
-                const yesId = \`accord-oui-\${idx}\`;
-                const noId = \`accord-non-\${idx}\`;
+                const yesId = `accord-oui-${idx}`;
+                const noId = `accord-non-${idx}`;
 
                 const lblYes = document.createElement("label");
                 const rYes = document.createElement("input");
                 rYes.type = "radio";
-                rYes.name = \`accord-\${idx}\`;
+                rYes.name = `accord-${idx}`;
                 rYes.value = "oui";
                 rYes.id = yesId;
                 lblYes.appendChild(rYes);
@@ -1129,7 +1149,7 @@
                 const lblNo = document.createElement("label");
                 const rNo = document.createElement("input");
                 rNo.type = "radio";
-                rNo.name = \`accord-\${idx}\`;
+                rNo.name = `accord-${idx}`;
                 rNo.value = "non";
                 rNo.id = noId;
                 lblNo.appendChild(rNo);
@@ -1189,7 +1209,7 @@
             let accordType = "";
 
             if (ex.mode === "B") {
-                const checked = item.querySelector(\`input[name="accord-\${idx}"]:checked\`);
+                const checked = item.querySelector(`input[name="accord-${idx}"]:checked`);
                 accordYesNo = checked ? checked.value : null;
 
                 const sel = item.querySelector('select[data-role="accordType"]');
@@ -1249,7 +1269,7 @@
             p2.className = "tip";
 
             if (!isFormCorrect) {
-                p2.innerHTML += \`• Forme attendue : <strong>\${ex.correctForm}</strong>.<br>\`;
+                p2.innerHTML += `• Forme attendue : <strong>${ex.correctForm}</strong>.<br>`;
             } else {
                 p2.innerHTML += "• Forme du verbe ✅<br>";
             }
@@ -1259,7 +1279,7 @@
                 const expectedYesNo = shouldAccord ? "oui" : "non";
 
                 if (!isAccordYesNoCorrect) {
-                    p2.innerHTML += \`• Accord : la bonne réponse était <strong>\${expectedYesNo}</strong>.<br>\`;
+                    p2.innerHTML += `• Accord : la bonne réponse était <strong>${expectedYesNo}</strong>.<br>`;
                 } else {
                     p2.innerHTML += "• Décision d’accorder ou non ✅<br>";
                 }
@@ -1274,20 +1294,20 @@
 
                 if (shouldAccord) {
                     if (!isAccordTypeCorrect) {
-                        p2.innerHTML += \`• Type d’accord : ici, on accorde avec <strong>\${mapType[ex.agreementType] || "l’élément adéquat"}</strong>.<br>\`;
+                        p2.innerHTML += `• Type d’accord : ici, on accorde avec <strong>${mapType[ex.agreementType] || "l’élément adéquat"}</strong>.<br>`;
                     } else {
                         p2.innerHTML += "• Type d’accord ✅<br>";
                     }
                 } else {
                     if (!isAccordTypeCorrect) {
-                        p2.innerHTML += \`• Ici, on considère qu’il <strong>n’y a pas d’accord</strong> à faire (\${mapType[ex.agreementType] || "règle spécifique"}).<br>\`;
+                        p2.innerHTML += `• Ici, on considère qu’il <strong>n’y a pas d’accord</strong> à faire (${mapType[ex.agreementType] || "règle spécifique"}).<br>`;
                     } else {
                         p2.innerHTML += "• Gestion de l’accord (ou non) ✅<br>";
                     }
                 }
             }
 
-            p2.innerHTML += \`• Rappel de la règle : \${ex.explanation}\`;
+            p2.innerHTML += `• Rappel de la règle : ${ex.explanation}`;
             feedback.appendChild(p2);
 
             if (!fullyCorrect && (
@@ -1305,7 +1325,7 @@
         const scoreDetails = document.getElementById("scoreDetails");
 
         scorePill.style.display = "inline-flex";
-        scoreText.textContent = \`\${fullCorrect} / \${total} exercices entièrement corrects\`;
+        scoreText.textContent = `${fullCorrect} / ${total} exercices entièrement corrects`;
 
         const ratio = fullCorrect / total;
         scorePill.classList.toggle("bad", ratio < 0.5);
@@ -1345,7 +1365,7 @@
             }
 
             doc.setFontSize(12);
-            doc.text(\`Exercice \${idx + 1} – \${ex.mode === "A" ? "Conjugaison" : "Accord du participe passé"}\`, 10, y);
+            doc.text(`Exercice ${idx + 1} – ${ex.mode === "A" ? "Conjugaison" : "Accord du participe passé"}`, 10, y);
             y += 6;
 
             doc.setFontSize(10);
@@ -1400,7 +1420,7 @@
         doc.save("conjugaison-accords-serie.pdf");
     }
 
-    // Brancher les boutons (script chargé en bas → les éléments existent déjà)
+    // Brancher les boutons
     const btnGenerate = document.getElementById("btnGenerate");
     const btnCorrect = document.getElementById("btnCorrect");
     const btnExport = document.getElementById("btnExport");
