@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             font-family: Nunito, sans-serif;
@@ -40,27 +41,46 @@
 
         .param-group { margin-bottom: 10px; }
 
-        label { cursor: pointer; display: inline-block; margin-right: 8px; }
+        label {
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
 
         input[type=text], select {
             padding: 6px 8px;
             width: 60%;
+            max-width: 320px;
             border-radius: 8px;
             border: 1px solid #ccc;
+            font-size: 0.9rem;
+        }
+
+        input[type=text]:focus, select:focus {
+            outline: none;
+            border-color: #4b7bec;
+            box-shadow: 0 0 0 2px rgba(75,123,236,0.25);
         }
 
         .btn {
             padding: 8px 16px;
             font-weight: 700;
-            border-radius: 8px;
+            border-radius: 999px;
             border: none;
             cursor: pointer;
             margin-right: 8px;
             margin-top: 4px;
+            font-size: 0.9rem;
         }
         .btn-primary { background: #4b7bec; color: #fff; }
         .btn-secondary { background: #dcdde1; }
         .btn-ghost { background: transparent; border: 1px solid #999; }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
         .exercise-item {
             padding: 12px;
@@ -73,7 +93,12 @@
         .feedback { font-size: 0.85rem; margin-top: 6px; }
         .ok { color: #20bf6b; }
         .ko { color: #eb3b5a; }
-        .date-info { font-size: 0.85rem; color: #555; margin-top: 10px; }
+
+        .date-info {
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -87,7 +112,7 @@
 <h1>Atelier de conjugaison & accord du participe passé</h1>
 <p style="color:#666;">Application pédagogique moderne — indicatif & accords bien expliqués.</p>
 
-<!-- PARAMETRES -->
+<!-- PARAMÈTRES -->
 <div class="card">
     <h2>⚙ Paramètres</h2>
 
@@ -106,10 +131,8 @@
         <label><input type="checkbox" name="tense" value="imparfait"> Imparfait</label>
         <label><input type="checkbox" name="tense" value="passe_simple"> Passé simple</label>
         <label><input type="checkbox" name="tense" value="futur_simple"> Futur simple</label><br>
-
         <label><input type="checkbox" name="tense" value="passe_compose"> Passé composé</label>
         <label><input type="checkbox" name="tense" value="plus_que_parfait"> Plus-que-parfait</label>
-        <label><input type="checkbox" name="tense" value="passe_anterieur"> Passé antérieur</label>
     </div>
 
     <div class="param-group">
@@ -138,208 +161,325 @@
     <div id="exerciseList">Aucun exercice généré pour l’instant.</div>
 </div>
 
-<!-- RESULTATS -->
+<!-- RÉSULTATS -->
 <div class="card">
     <h2>📊 Résultats</h2>
     <p id="results">Aucun résultat pour l’instant.</p>
 </div>
 
-<!-- jsPDF -->
+<!-- 1) FICHIER DE DONNÉES DES VERBES -->
+<script src="verbs-data.js"></script>
+
+<!-- 2) jsPDF POUR L'EXPORT -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<!-- 3) LOGIQUE PRINCIPALE -->
 <script>
-/* =====================================================
-   BANQUE D’EXERCICES AVEC (INFINITIF — TEMPS)
-   OPTION A : le temps apparaît bien dans chaque phrase
-===================================================== */
-const EX = [
-    // MODE A
-    {mode:"A", level:1, tense:"present", group:1, sentence:"Tu (parler — présent) ___ trop vite.", form:"parles"},
-    {mode:"A", level:1, tense:"present", group:2, sentence:"Nous (finir — présent) ___ nos devoirs.", form:"finissons"},
-    {mode:"A", level:1, tense:"present", group:3, sentence:"Ils (aller — présent) ___ au cinéma.", form:"vont"},
-    {mode:"A", level:1, tense:"imparfait", group:1, sentence:"Nous (jouer — imparfait) ___ dans le jardin.", form:"jouions"},
-    {mode:"A", level:1, tense:"futur_simple", group:3, sentence:"Elle (partir — futur simple) ___ demain.", form:"partira"},
-    {mode:"A", level:1, tense:"passe_simple", group:1, sentence:"Ils (parler — passé simple) ___ toute la soirée.", form:"parlèrent"},
+// ========= 1. CONSTANTES & OUTILS =========
+const TENSE_LABELS = {
+    present: "présent",
+    imparfait: "imparfait",
+    passe_simple: "passé simple",
+    futur_simple: "futur simple",
+    passe_compose: "passé composé",
+    plus_que_parfait: "plus-que-parfait"
+};
 
-    {mode:"A", level:2, tense:"passe_compose", group:2, sentence:"Nous (finir — passé composé) ___ ce livre.", form:"avons fini"},
-    {mode:"A", level:2, tense:"passe_compose", group:3, sentence:"Elles (aller — passé composé) ___ au marché.", form:"sont allées"},
-    {mode:"A", level:2, tense:"plus_que_parfait", group:1, sentence:"Ils (terminer — plus-que-parfait) ___ le projet.", form:"avaient terminé"},
+const PRONOUNS = ["je", "tu", "il", "nous", "vous", "ils"];
 
-    // MODE B
-    {mode:"B", level:1, tense:"passe_compose", group:3,
-     sentence:"Il a (manger — passé composé) ___ des pommes.",
-     form:"mangé", agree:false, type:"aucun"},
-
-    {mode:"B", level:1, tense:"passe_compose", group:1,
-     sentence:"Elles sont (arriver — passé composé) ___ en avance.",
-     form:"arrivées", agree:true, type:"sujet"},
-
-    {mode:"B", level:2, tense:"passe_compose", group:3,
-     sentence:"Les pommes qu’il a (manger — passé composé) ___ étaient délicieuses.",
-     form:"mangées", agree:true, type:"cod"},
-
-    {mode:"B", level:3, tense:"passe_compose", group:3,
-     sentence:"Ils se sont (parler — passé composé) ___ longtemps.",
-     form:"parlé", agree:false, type:"aucun"}
-];
-
-let CURRENT = [];
-let HAS_CORRECTION = false;
-
-/* =====================================================
-   OUTILS
-===================================================== */
+function sample(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
 function getChecked(name) {
     return [...document.querySelectorAll('input[name="'+name+'"]:checked')].map(x=>x.value);
 }
 function getMode() {
     return document.querySelector('input[name="mode"]:checked').value;
 }
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
-/* =====================================================
-   GÉNÉRATION
-===================================================== */
+// ========= 2. EXERCICES MODE B (accords) EN DUR =========
+const EX_MODE_B = [
+    {
+        sentence: "Il a (manger — passé composé) ___ des pommes.",
+        correctForm: "mangé",
+        agree: false, // accord ? oui/non
+        type: "aucun" // "sujet" / "cod" / "aucun"
+    },
+    {
+        sentence: "Elles sont (arriver — passé composé) ___ en avance.",
+        correctForm: "arrivées",
+        agree: true,
+        type: "sujet"
+    },
+    {
+        sentence: "Les pommes qu’il a (manger — passé composé) ___ étaient délicieuses.",
+        correctForm: "mangées",
+        agree: true,
+        type: "cod"
+    },
+    {
+        sentence: "Ils se sont (parler — passé composé) ___ longtemps.",
+        correctForm: "parlé",
+        agree: false,
+        type: "aucun"
+    }
+];
+
+// ========= 3. ÉTAT COURANT =========
+let CURRENT = [];
+let HAS_CORRECTION = false;
+
+// ========= 4. GÉNÉRATION DES EXERCICES =========
 document.getElementById("btnGenerate").onclick = () => {
-    document.getElementById("btnCorrect").disabled = false;
-
     const level = Number(document.getElementById("levelSelect").value);
     const tenses = getChecked("tense");
     const groups = getChecked("group").map(Number);
     const mode = getMode();
 
-    let list = EX.filter(ex =>
-        ex.mode === mode &&
-        ex.level <= level &&
-        tenses.includes(ex.tense) &&
-        groups.includes(ex.group)
-    );
-
-    if (list.length === 0) {
-        document.getElementById("exerciseList").innerHTML =
-            "<p>Aucun exercice disponible pour ces critères.</p>";
+    if (tenses.length === 0) {
+        alert("Choisis au moins un temps.");
+        return;
+    }
+    if (groups.length === 0) {
+        alert("Choisis au moins un groupe verbal.");
         return;
     }
 
-    while (list.length < 5) list = list.concat(list);
-    list = list.slice(0,5);
+    let exercises = [];
 
-    CURRENT = list.map(ex => ({
-        meta: ex,
-        user: {form:"", yesno:null, type:""}
-    }));
+    if (mode === "A") {
+        // MODE A : Conjugaison à partir de VERBS_DATA
+        exercises = generateModeAExercises(tenses, groups, level);
+    } else {
+        // MODE B : Accord du participe passé (banque en dur)
+        exercises = generateModeBExercises(level);
+    }
 
+    if (exercises.length === 0) {
+        document.getElementById("exerciseList").innerHTML =
+            "<p>Aucun exercice disponible pour ces paramètres.</p>";
+        document.getElementById("btnCorrect").disabled = true;
+        document.getElementById("btnExport").disabled = true;
+        return;
+    }
+
+    CURRENT = exercises;
     renderExercises();
-    HAS_CORRECTION = false;
+    document.getElementById("btnCorrect").disabled = false;
     document.getElementById("btnExport").disabled = true;
+    HAS_CORRECTION = false;
 
-    // 🕒 Ajout : date + heure de génération
+    // Ajout : date + heure de génération
     const now = new Date();
     document.getElementById("generationTime").textContent =
         "🕒 Exercices générés le : " +
-        now.toLocaleDateString("fr-FR") + " à " + now.toLocaleTimeString("fr-FR");
+        now.toLocaleDateString("fr-FR") +
+        " à " +
+        now.toLocaleTimeString("fr-FR");
 };
 
+// Génération Mode A (conjugaison)
+function generateModeAExercises(tenses, groups, level) {
+    let pool = [];
+
+    // on parcourt tous les verbes de VERBS_DATA
+    for (const [infinitive, data] of Object.entries(VERBS_DATA)) {
+        if (!groups.includes(data.group)) continue;
+
+        for (const tense of tenses) {
+            if (!data.conjugations[tense]) continue; // ce verbe ne couvre pas ce temps
+            // niveau pas encore exploité finement, mais on pourrait plus tard
+            PRONOUNS.forEach(pr => {
+                if (data.conjugations[tense][pr]) {
+                    pool.push({ infinitive, tense, pronoun: pr });
+                }
+            });
+        }
+    }
+
+    if (pool.length === 0) return [];
+
+    // On garantit 5 exercices
+    let selected = [];
+    while (selected.length < 5) {
+        selected = selected.concat(pool);
+    }
+    selected = selected.slice(0, 5);
+
+    // On crée les objets d'exercices
+    const complements = [
+        "trop vite.",
+        "chaque soir.",
+        "le matin.",
+        "depuis longtemps.",
+        "avec attention."
+    ];
+
+    return selected.map(item => {
+        const label = TENSE_LABELS[item.tense] || item.tense;
+        const subject = item.pronoun === "je" ? "Je" : capitalize(item.pronoun);
+        const sentence =
+            subject + " (" + item.infinitive + " — " + label + ") ___ " + sample(complements);
+
+        const correctForm = VERBS_DATA[item.infinitive].conjugations[item.tense][item.pronoun];
+
+        return {
+            mode: "A",
+            sentence,
+            correctForm,
+            meta: {
+                infinitive: item.infinitive,
+                pronoun: item.pronoun,
+                tense: item.tense
+            },
+            user: { form: "" }
+        };
+    });
+}
+
+// Génération Mode B (accords)
+function generateModeBExercises(level) {
+    // pour l'instant : on ignore le niveau, mais on pourrait filtrer plus tard
+    let list = EX_MODE_B.slice();
+
+    // on garantit 5 ex
+    while (list.length < 5) list = list.concat(list);
+    list = list.slice(0, 5);
+
+    return list.map(ex => ({
+        mode: "B",
+        sentence: ex.sentence,
+        correctForm: ex.correctForm,
+        meta: { agree: ex.agree, type: ex.type },
+        user: { form: "", yesno: null, type: "" }
+    }));
+}
+
+// ========= 5. AFFICHAGE =========
 function renderExercises() {
     const box = document.getElementById("exerciseList");
     box.innerHTML = "";
 
-    CURRENT.forEach((ex,i) => {
-        let div = document.createElement("div");
+    CURRENT.forEach((ex, i) => {
+        const div = document.createElement("div");
         div.className = "exercise-item";
 
         div.innerHTML = `
-            <p><strong>Exercice ${i+1}</strong></p>
-            <p>${ex.meta.sentence}</p>
+            <p><strong>Exercice ${i+1}</strong> — ${ex.mode === "A" ? "Conjugaison" : "Accord du participe passé"}</p>
+            <p>${ex.sentence}</p>
             <p>Réponse :
-                <input type="text" data-i="${i}" class="answer">
+                <input type="text" data-i="${i}" class="answer" placeholder="Écris ta réponse">
             </p>
+            <div class="feedback" id="fb${i}"></div>
         `;
 
-        if (ex.meta.mode === "B") {
-            div.innerHTML += `
-                <p>Accord ?
+        if (ex.mode === "B") {
+            const extra = document.createElement("div");
+            extra.innerHTML = `
+                <p>Faut-il accorder ?
                     <label><input type="radio" name="y${i}" value="oui"> Oui</label>
                     <label><input type="radio" name="y${i}" value="non"> Non</label>
                 </p>
-                <p>Type :
+                <p>Type d’accord :
                     <select data-type="${i}">
                         <option value="">--</option>
-                        <option value="sujet">Sujet</option>
+                        <option value="sujet">Sujet (être)</option>
                         <option value="cod">COD avant</option>
-                        <option value="aucun">Aucun</option>
+                        <option value="aucun">Pas d’accord</option>
                     </select>
                 </p>
             `;
+            div.appendChild(extra);
         }
 
-        div.innerHTML += `<div class="feedback" id="fb${i}"></div>`;
         box.appendChild(div);
     });
 }
 
-/* =====================================================
-   CORRECTION
-===================================================== */
+// ========= 6. CORRECTION =========
 document.getElementById("btnCorrect").onclick = () => {
     let score = 0;
 
-    CURRENT.forEach((ex,i)=>{
-        const meta = ex.meta;
+    CURRENT.forEach((ex, i) => {
+        const fb = document.getElementById("fb"+i);
+        const input = document.querySelector(`input[data-i="${i}"]`);
+        ex.user.form = input.value.trim();
 
-        ex.user.form = document.querySelector(`input[data-i="${i}"]`).value.trim();
+        let ok = (ex.user.form.toLowerCase() === ex.correctForm.toLowerCase());
 
-        if (meta.mode === "B") {
+        if (ex.mode === "B") {
             const y = document.querySelector(`input[name="y${i}"]:checked`);
+            const typeSelect = document.querySelector(`select[data-type="${i}"]`);
             ex.user.yesno = y ? y.value : null;
-            ex.user.type = document.querySelector(`select[data-type="${i}"]`).value;
+            ex.user.type = typeSelect ? typeSelect.value : "";
+
+            // accord attendu ?
+            if (ex.meta.agree && ex.user.yesno !== "oui") ok = false;
+            if (!ex.meta.agree && ex.user.yesno !== "non") ok = false;
+            if (ex.meta.agree && ex.user.type !== ex.meta.type) ok = false;
         }
 
-        let ok = (ex.user.form.toLowerCase() === meta.form.toLowerCase());
-
-        if (meta.mode === "B") {
-            if (meta.agree && ex.user.yesno !== "oui") ok = false;
-            if (!meta.agree && ex.user.yesno !== "non") ok = false;
-            if (meta.agree && ex.user.type !== meta.type) ok = false;
+        if (ok) {
+            score++;
+            fb.innerHTML = `<span class="ok">✔ Correct</span>`;
+        } else {
+            fb.innerHTML = `<span class="ko">✘ Incorrect — attendu : ${ex.correctForm}</span>`;
         }
-
-        if (ok) score++;
-
-        document.getElementById("fb"+i).innerHTML =
-            ok ? `<span class="ok">✔ Correct</span>` :
-                 `<span class="ko">✘ Incorrect — attendu : ${meta.form}</span>`;
     });
 
     document.getElementById("results").innerHTML =
-        `<strong>Score :</strong> ${score}/5`;
+        `<strong>Score :</strong> ${score} / ${CURRENT.length}`;
 
     HAS_CORRECTION = true;
     document.getElementById("btnExport").disabled = false;
 };
 
-/* =====================================================
-   EXPORT PDF
-===================================================== */
+// ========= 7. EXPORT PDF =========
 document.getElementById("btnExport").onclick = () => {
-    if (!HAS_CORRECTION) return;
+    if (!HAS_CORRECTION || CURRENT.length === 0) return;
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert("jsPDF ne s'est pas chargé. L'export PDF n'est pas disponible.");
+        return;
+    }
 
     const doc = new window.jspdf.jsPDF();
     let y = 10;
 
-    doc.text("Plateforme d'entraînement — Conjugaison & Accords", 10, y); y+=10;
+    doc.setFontSize(14);
+    doc.text("Plateforme d'entraînement — Conjugaison & Accords", 10, y);
+    y += 8;
 
-    CURRENT.forEach((ex,i)=>{
+    const now = new Date();
+    doc.setFontSize(10);
+    doc.text(
+        "Série générée le " + now.toLocaleDateString("fr-FR") +
+        " à " + now.toLocaleTimeString("fr-FR"),
+        10, y
+    );
+    y += 8;
+
+    CURRENT.forEach((ex, i) => {
         if (y > 260) { doc.addPage(); y = 10; }
 
-        doc.text(`Exercice ${i+1}`, 10, y); y+=6;
-        doc.text(ex.meta.sentence.replace("___", ex.user.form || "_____"), 10, y); y+=6;
-        doc.text("Attendu : "+ex.meta.form, 10, y); y+=6;
+        doc.setFontSize(11);
+        doc.text("Exercice " + (i+1), 10, y); y += 6;
+
+        const phrase = ex.sentence.replace("___", ex.user.form || "_____");
+        const lines = doc.splitTextToSize(phrase, 180);
+        doc.text(lines, 10, y);
+        y += lines.length * 5;
+
+        doc.text("Attendu : " + ex.correctForm, 10, y);
+        y += 6;
     });
 
-    doc.save("entrainement.pdf");
+    doc.save("entrainement-conjugaison-accords.pdf");
 };
 </script>
 
 </body>
 </html>
-
 
